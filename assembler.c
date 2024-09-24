@@ -1,5 +1,7 @@
-#include <stdio.h>
+#include "table.h"
+#include "parser.h"
 
+#include <stdio.h>
 
 int main() {
     FILE *fptr;

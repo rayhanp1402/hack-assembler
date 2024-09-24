@@ -5,20 +5,6 @@
 #include <stdbool.h>
 #include <string.h>
 
-typedef struct node {
-    char* key;
-    char* value;
-
-    struct node* next;
-} Node;
-
-typedef struct table {
-    Node* first;
-    Node* last;
-
-    int size;
-} Table;
-
 Node* create_node(char* key, char* value) {
     Node* newNode = (Node*) malloc(sizeof(Node));
     newNode->key = key;

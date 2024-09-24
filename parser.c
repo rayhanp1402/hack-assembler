@@ -12,18 +12,6 @@
 #define MAX_COMP_SIZE 8
 #define MAX_JUMP_SIZE 4
 
-typedef struct instruction {
-    char addr[MAX_ADDRESS_SIZE];
-    char dest[MAX_DEST_SIZE];
-    char comp[MAX_COMP_SIZE];
-    char jump[MAX_JUMP_SIZE];
-
-    bool isAddrEmpty;
-    bool isDestEmpty;
-    bool isCompEmpty;
-    bool isJumpEmpty;
-} Instruction;
-
 void concatenate_character(char* string, char character) {
     int stringLength = strlen(string);
     string[stringLength + 1] = '\0';
