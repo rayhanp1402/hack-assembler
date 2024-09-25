@@ -75,3 +75,18 @@ void print_table(Table* table) {
         currentNode = currentNode->next;
     }
 }
+
+void free_table(Table* table) {
+    Node* currentNode = table->first;
+    Node* nextNode;
+
+    while (currentNode != NULL) {
+        nextNode = currentNode->next;
+        
+        free(currentNode);
+
+        currentNode = nextNode;
+    }
+
+    free(table);
+}

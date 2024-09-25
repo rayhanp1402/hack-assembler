@@ -28,4 +28,6 @@ char* get_value(char* key, Table* table);
 
 void print_table(Table* table);
 
+void free_table(Table* table);
+
 #endif

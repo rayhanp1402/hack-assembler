@@ -24,10 +24,6 @@ Instruction* parse_line_to_instruction(char* line) {
     instruction->dest[0] = '\0';
     instruction->comp[0] = '\0';
     instruction->jump[0] = '\0';
-    instruction->isAddrEmpty = false;
-    instruction->isDestEmpty = false;
-    instruction->isCompEmpty = false;
-    instruction->isJumpEmpty = false;
 
     // Stores current C-Instruction before knowing if is it dest/comp/jmp
     char tempString[MAX_DEST_SIZE + MAX_COMP_SIZE + MAX_JUMP_SIZE + 2] = "";
@@ -75,4 +71,8 @@ Instruction* parse_line_to_instruction(char* line) {
     }
 
     return instruction;
+}
+
+void free_instruction(Instruction* instruction) {
+    free(instruction);
 }

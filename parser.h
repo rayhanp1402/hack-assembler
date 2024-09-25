@@ -14,15 +14,12 @@ typedef struct instruction {
     char dest[MAX_DEST_SIZE];
     char comp[MAX_COMP_SIZE];
     char jump[MAX_JUMP_SIZE];
-
-    bool isAddrEmpty;
-    bool isDestEmpty;
-    bool isCompEmpty;
-    bool isJumpEmpty;
 } Instruction;
 
 void concatenate_character(char* string, char character);
 
 Instruction* parse_line_to_instruction(char* line);
+
+void free_instruction(Instruction* instruction);
 
 #endif
