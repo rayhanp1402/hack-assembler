@@ -1,5 +1,6 @@
 #include "table.h"
 #include "parser.h"
+#include "assembler.h"
 
 #include <stdio.h>
 #include <string.h>
