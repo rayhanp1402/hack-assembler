@@ -1,4 +1,4 @@
-#include "table.h"
+#include "../data_structures/table.h"
 #include "parser.h"
 #include "assembler.h"
 

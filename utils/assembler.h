@@ -1,7 +1,7 @@
 #ifndef ASSEMBLER_H
 #define ASSEMBLER_H
 
-#include "table.h"
+#include "../data_structures/table.h"
 #include "parser.h"
 
 #include <stdio.h>

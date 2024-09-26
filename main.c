@@ -1,6 +1,6 @@
-#include "table.h"
-#include "parser.h"
-#include "assembler.h"
+#include "./data_structures/table.h"
+#include "./utils/parser.h"
+#include "./utils/assembler.h"
 
 #define MAX_LINE_LENGTH 4096    // POSIX suggested
 
