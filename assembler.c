@@ -5,9 +5,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define BASE_10 10
-#define BITS_LENGTH 16
-
 char* to16Bits(int num) {
     char* bits = (char*) malloc(sizeof(char) * (BITS_LENGTH + 1));
     bits[BITS_LENGTH] = '\0';
@@ -133,34 +130,12 @@ char* assemble(Instruction* instruction) {
             assembledCInstruction[15] = jumpBits[2];
         }
 
-        free(destTable);
-        free(compTable);
-        free(jumpTable);
+        free_table(destTable);
+        free_table(compTable);
+        free_table(jumpTable);
 
         return assembledCInstruction;
     }
     
     return NULL;
-}
-
-int main() {
-    FILE *fptr;
-    fptr = fopen("Add.asm", "r");
-
-    char myString[100];
-
-    while(fgets(myString, 100, fptr)) {
-        Instruction* instrTest = parse_line_to_instruction(myString);
-        printf("Addr:%s\nDest:%s\nComp:%s\nJmp:%s\n", 
-            instrTest->addr,
-            instrTest->dest,
-            instrTest->comp,
-            instrTest->jump
-        );
-        printf("%s\n\n", assemble(instrTest));
-    }
-
-    fclose(fptr);
-
-    return 0;
 }

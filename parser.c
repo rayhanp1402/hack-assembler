@@ -6,12 +6,6 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#define MAX_LINE_SIZE 4096  // POSIX suggested
-#define MAX_ADDRESS_SIZE 6
-#define MAX_DEST_SIZE 4
-#define MAX_COMP_SIZE 8
-#define MAX_JUMP_SIZE 4
-
 void concatenate_character(char* string, char character) {
     int stringLength = strlen(string);
     string[stringLength + 1] = '\0';
