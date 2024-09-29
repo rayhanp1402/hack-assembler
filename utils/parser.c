@@ -20,7 +20,7 @@ bool isNumber(char* string) {
     return true;
 }
 
-Instruction* parse_line_to_instruction(char* line) {
+Instruction* parse_line_to_instruction(char* line, Table* variableTable, Table* labelTable) {
     Instruction* instruction = (Instruction*) malloc(sizeof(Instruction));
     instruction->addr[0] = '\0';
     instruction->dest[0] = '\0';
@@ -28,13 +28,16 @@ Instruction* parse_line_to_instruction(char* line) {
     instruction->jump[0] = '\0';
 
     // Stores current C-Instruction before knowing if is it dest/comp/jmp
-    char tempString[MAX_DEST_SIZE + MAX_COMP_SIZE + MAX_JUMP_SIZE + 2] = "";
+    char tempCString[MAX_DEST_SIZE + MAX_COMP_SIZE + MAX_JUMP_SIZE + 2] = "";
+
+    // Stores current A-Instruction to check if is it a variable
+    char tempAString[MAX_SYMBOL_SIZE] = "";
 
     int lineLength = strlen(line);
     bool isAInstruction = false;
     bool includeJump = false;
     for (int i = 0; i < lineLength; ++i) {
-        if (line[i] == '\n') break;
+        if (line[i] == '\n' || line[i] == '(' || line[i] == ')') break;
 
         if (isspace(line[i])) continue;
 
@@ -48,27 +51,35 @@ Instruction* parse_line_to_instruction(char* line) {
         }
 
         if (isAInstruction) {
-            concatenateCharacter(instruction->addr, line[i]);
+            concatenateCharacter(tempAString, line[i]);
             continue;
         }
 
         if (line[i] == '=') {
-            strcat(instruction->dest, tempString);
-            tempString[0] = '\0';
+            strcat(instruction->dest, tempCString);
+            tempCString[0] = '\0';
         } else if (line[i] == ';') {
-            strcat(instruction->comp, tempString);
-            tempString[0] = '\0';
+            strcat(instruction->comp, tempCString);
+            tempCString[0] = '\0';
             includeJump = true;
         } else {
-            concatenateCharacter(tempString, line[i]);
+            concatenateCharacter(tempCString, line[i]);
         }
     }
 
     if (!isAInstruction) {
         if (includeJump) {
-            strcat(instruction->jump, tempString);
+            strcat(instruction->jump, tempCString);
         } else {
-            strcat(instruction->comp, tempString);
+            strcat(instruction->comp, tempCString);
+        }
+    } else {
+        if (key_exists(tempAString, variableTable)) {
+            strcat(instruction->addr, get_value(tempAString, variableTable));
+        } else if (key_exists(tempAString, labelTable)) {
+            strcat(instruction->addr, get_value(tempAString, labelTable));
+        } else {
+            strcat(instruction->addr, tempAString);
         }
     }
 
@@ -146,7 +157,7 @@ void parse_line_to_variable(char* line, Table* variableTable, Table* labelTable)
         if (!key_exists(variable, variableTable) && !key_exists(variable, labelTable)) {
             char* address = (char*) malloc(sizeof(char) * MAX_ADDRESS_SIZE);
             address[0] = '\0';
-            sprintf(address, "%d", (variableTable->size) - 1);
+            sprintf(address, "%d", (variableTable->size) - 7); // Excludes SP, LCL, ARG, THIS, THAT, SCREEN, and KBD
             insert_to_table(variable, address, variableTable);
         }
     }

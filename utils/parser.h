@@ -1,6 +1,8 @@
 #ifndef PARSER_H
 #define PARSER_H
 
+#include <stdbool.h>
+
 #define MAX_ADDRESS_SIZE 6
 #define MAX_DEST_SIZE 4
 #define MAX_COMP_SIZE 8
@@ -30,15 +32,17 @@ void concatenateCharacter(char* string, char character);
  * 
  * @param string The string to which the character will be checked.
  */
-void isNumber(char* string);
+bool isNumber(char* string);
 
 /**
  * Parses a line of assembly code into an Instruction struct.
  * 
  * @param line The line of assembly code to parse.
+ * @param variableTable A pointer to an existing Variable Table.
+ * @param labelTable A pointer to an existing Label Table.
  * @return A pointer to the parsed Instruction. The caller is responsible for freeing this memory.
  */
-Instruction* parse_line_to_instruction(char* line);
+Instruction* parse_line_to_instruction(char* line, Table* variableTable, Table* labelTable);
 
 /**
  * Parses a line of assembly code which contains a Label declaration into a Label Table.
