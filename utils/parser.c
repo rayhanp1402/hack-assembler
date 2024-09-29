@@ -7,10 +7,17 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-void concatenate_character(char* string, char character) {
+void concatenateCharacter(char* string, char character) {
     int stringLength = strlen(string);
     string[stringLength + 1] = '\0';
     string[stringLength] = character;
+}
+
+bool isNumber(char* string) {
+    for (int i = 0; i < strlen(string); ++i) {
+        if (!isdigit(string[i])) return false;
+    }
+    return true;
 }
 
 Instruction* parse_line_to_instruction(char* line) {
@@ -41,7 +48,7 @@ Instruction* parse_line_to_instruction(char* line) {
         }
 
         if (isAInstruction) {
-            concatenate_character(instruction->addr, line[i]);
+            concatenateCharacter(instruction->addr, line[i]);
             continue;
         }
 
@@ -53,7 +60,7 @@ Instruction* parse_line_to_instruction(char* line) {
             tempString[0] = '\0';
             includeJump = true;
         } else {
-            concatenate_character(tempString, line[i]);
+            concatenateCharacter(tempString, line[i]);
         }
     }
 
@@ -73,7 +80,7 @@ void parse_line_to_label(char* line, Table* labelTable, int* lineCounter) {
     bool isReadingLabel = false;
     bool isInstruction = false;
 
-    char* label = (char*) malloc(sizeof(char) * MAX_LABEL_SIZE);
+    char* label = (char*) malloc(sizeof(char) * MAX_SYMBOL_SIZE);
     label[0] = '\0';
     
     for (int i = 0; i < lineLength; ++i) {
@@ -97,7 +104,7 @@ void parse_line_to_label(char* line, Table* labelTable, int* lineCounter) {
         }
 
         if (isReadingLabel) {
-            concatenate_character(label, line[i]);
+            concatenateCharacter(label, line[i]);
         }
     }
 
@@ -105,8 +112,43 @@ void parse_line_to_label(char* line, Table* labelTable, int* lineCounter) {
         char* romAddress = (char*) malloc(sizeof(char) * MAX_ROM_SIZE);
         romAddress[0] = '\0';
         sprintf(romAddress, "%d", *lineCounter);
-        printf("ROM ADDRESS: %s\nLABEL: %s\n\n", romAddress, label);
         insert_to_table(label, romAddress, labelTable);
+    }
+}
+
+void parse_line_to_variable(char* line, Table* variableTable, Table* labelTable) {
+    int lineLength = strlen(line);
+    bool isAInstruction = false;
+
+    char* variable = (char*) malloc(sizeof(char) * MAX_SYMBOL_SIZE);
+    variable[0] = '\0';
+    
+    for (int i = 0; i < lineLength; ++i) {
+        if (line[i] == '\n' || line[i] == ')') break;
+
+        if (isspace(line[i])) continue;
+
+        if (i < lineLength - 1 && line[i] == '/' && line[i+1] == '/') {
+            break;  // Terminate when comment is found
+        }
+
+        if (line[i] == '@') {
+            isAInstruction = true;
+            continue;
+        }
+
+        if (isAInstruction) {
+            concatenateCharacter(variable, line[i]);
+        }
+    }
+
+    if (isAInstruction && !isNumber(variable)) {
+        if (!key_exists(variable, variableTable) && !key_exists(variable, labelTable)) {
+            char* address = (char*) malloc(sizeof(char) * MAX_ADDRESS_SIZE);
+            address[0] = '\0';
+            sprintf(address, "%d", (variableTable->size) - 1);
+            insert_to_table(variable, address, variableTable);
+        }
     }
 }
 
