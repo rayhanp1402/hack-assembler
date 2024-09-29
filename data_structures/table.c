@@ -83,6 +83,8 @@ void free_table(Table* table) {
     while (currentNode != NULL) {
         nextNode = currentNode->next;
         
+        free(currentNode->key);
+        free(currentNode->value);
         free(currentNode);
 
         currentNode = nextNode;

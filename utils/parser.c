@@ -1,3 +1,4 @@
+#include "../data_structures/table.h"
 #include "parser.h"
 
 #include <stdio.h>
@@ -65,6 +66,48 @@ Instruction* parse_line_to_instruction(char* line) {
     }
 
     return instruction;
+}
+
+void parse_line_to_label(char* line, Table* labelTable, int* lineCounter) {
+    int lineLength = strlen(line);
+    bool isReadingLabel = false;
+    bool isInstruction = false;
+
+    char* label = (char*) malloc(sizeof(char) * MAX_LABEL_SIZE);
+    label[0] = '\0';
+    
+    for (int i = 0; i < lineLength; ++i) {
+        if (line[i] == '\n' || line[i] == ')') break;
+
+        if (isspace(line[i])) continue;
+
+        if (i < lineLength - 1 && line[i] == '/' && line[i+1] == '/') {
+            break;  // Terminate when comment is found
+        }
+
+        if (line[i] == '@' || line[i] == '=' || line[i] == ';') {
+            isReadingLabel = false;
+            (*lineCounter)++;
+            break;
+        }
+
+        if (line[i] == '(') {
+            isReadingLabel = true;
+            continue;
+        }
+
+        if (isReadingLabel) {
+            concatenate_character(label, line[i]);
+        }
+    }
+
+    if (strlen(label) > 0 && isReadingLabel) {
+        char* romAddress = (char*) malloc(sizeof(char) * MAX_ROM_SIZE);
+        romAddress[0] = '\0';
+        sprintf(romAddress, "%d", *lineCounter);
+        printf("ROM ADDRESS: %s\nLABEL: %s\n\n", romAddress, label);
+        insert_to_table(label, romAddress, labelTable);
+    }
 }
 
 void free_instruction(Instruction* instruction) {
